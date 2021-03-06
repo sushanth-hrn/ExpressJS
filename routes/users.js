@@ -81,7 +81,7 @@ router.post('/login', (req,res,next) => {
 router.get('/logout', (req,res,next) => {
   if (req.session) {
     req.session.destroy();
-    req.clearCookie('session-id');
+    res.clearCookie('session-id');
     res.redirect('/');
   }
   else {
