@@ -8,9 +8,8 @@ var FileStore = require('session-file-store')(session);
 const mongoose = require('mongoose');
 var passport = require('passport')
 var authenticate = require('./authenticate');
-var config = require('./config');
 
-var url = config.mongoUrl;
+var url = 'mongodb://localhost:27017/conFusion';
 var connect = mongoose.connect(url);
 
 connect.then((db) => {

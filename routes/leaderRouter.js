@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const authenticate = require('../authenticate');
+var authenticate = require('../authenticate');
 
 const leaderRouter = express.Router();
 leaderRouter.use(bodyParser.json());
