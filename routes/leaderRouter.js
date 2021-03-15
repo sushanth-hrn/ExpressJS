@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 var authenticate = require('../authenticate');
+var cors = require('./cors');
 
 const leaderRouter = express.Router();
 leaderRouter.use(bodyParser.json());
@@ -8,7 +9,10 @@ leaderRouter.use(bodyParser.json());
 const Leader = require('../models/leaders');
 
 leaderRouter.route('/')
-.get((req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+})
+.get(cors.cors, (req, res, next) => {
     Leader.find({})
     .then((leaders) => {
         res.statusCode = 200;
@@ -18,7 +22,7 @@ leaderRouter.route('/')
     .catch((err) => {next(err);});
 })
 
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Leader.create(req.body)
     .then((resp) => {
         res.statusCode = 200;
@@ -28,12 +32,12 @@ leaderRouter.route('/')
     .catch((err) => {next(err);});
 })
 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('PUT is not supported on /leaders');
 })
 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Leader.remove({})
     .then((resp) => {
         res.statusCode = 200;
@@ -45,7 +49,10 @@ leaderRouter.route('/')
 
 
 leaderRouter.route('/:leaderId')
-.get((req, res, next) => {
+.options(cors.corsWithOptions, (req, res) => {
+    res.sendStatus(200);
+})
+.get(cors.cors, (req, res, next) => {
     Leader.findById(req.params.leaderId)
     .then((leader) => {
         res.statusCode = 200;
@@ -55,13 +62,13 @@ leaderRouter.route('/:leaderId')
     .catch((err) => {next(err);});
 })
 
-.post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.post(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.statusCode = 403;
     res.end('POST is not supported on /leaders/' 
         + req.params.leaderId);
 })
 
-.put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.put(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Leader.findByIdAndUpdate(req.params.leaderId, {
         $set: req.body
     }, { new: true })
@@ -73,7 +80,7 @@ leaderRouter.route('/:leaderId')
     .catch((err) => {next(err);});
 })
 
-.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     Leader.findByIdAndRemove(req.params.leaderId)
     .then((resp) => {
         res.statusCode = 200;
